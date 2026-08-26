@@ -1,1 +1,36 @@
+name: Centinela Menarguez-IA
 
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comprobar servicios y avisar por Telegram
+        run: |
+          declare -A servicios=(
+            ["n8n"]="https://n8n.menarguez-ia.com"
+            ["Dashboard"]="https://dashboard.menarguez-ia.com"
+            ["Auth"]="https://auth.menarguez-ia.com"
+            ["Web"]="https://ai.menarguez-ia.com"
+            ["Nextcloud"]="https://cloud.menarguez-ia.com"
+          )
+
+          for nombre in "${!servicios[@]}"; do
+            url="${servicios[$nombre]}"
+            status=$(curl -o /dev/null -s -m 10 -w "%{http_code}" "$url" || echo "000")
+            if [ "$status" != "200" ]; then
+              mensaje="🔴 *Centinela Menarguez-IA*%0A%0AServicio caído: *${nombre}*%0AURL: ${url}%0ACódigo: ${status}"
+              curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
+                -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+                -d "parse_mode=Markdown" \
+                -d "text=${mensaje}"
+              echo "ALERTA enviada: $nombre caído ($status)"
+            else
+
+              echo "OK: $nombre ($status)"
+            fi
+          done
