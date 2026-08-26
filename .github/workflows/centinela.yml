@@ -21,7 +21,7 @@ jobs:
 
           for nombre in "${!servicios[@]}"; do
             url="${servicios[$nombre]}"
-            status=$(curl -o /dev/null -s -m 10 -w "%{http_code}" "$url" || echo "000")
+            status=$(curl -L -o /dev/null -s -m 10 -w "%{http_code}" "$url" || echo "000")
             if [ "$status" != "200" ]; then
               mensaje="🔴 *Centinela Menarguez-IA*%0A%0AServicio caído: *${nombre}*%0AURL: ${url}%0ACódigo: ${status}"
               curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
