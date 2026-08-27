@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Centinela · Menarguez-IA Solutions</title>
+<link rel="icon" type="image/png" href="logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -12,82 +13,138 @@
     --brand-primary: #0080F0;
     --brand-accent: #FFC300;
     --brand-font: 'Lato', Arial, sans-serif;
+    --up: #22c55e;
+    --down: #ef4444;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--brand-bg);
+    background:
+      radial-gradient(circle at 15% 0%, rgba(0,128,240,0.10), transparent 40%),
+      radial-gradient(circle at 85% 100%, rgba(255,195,0,0.06), transparent 40%),
+      var(--brand-bg);
     color: var(--brand-text);
     font-family: var(--brand-font);
     min-height: 100vh;
-    padding: 48px 20px;
+    padding: 56px 20px;
   }
-  .container { max-width: 720px; margin: 0 auto; }
-  header { margin-bottom: 32px; }
+  .container { max-width: 760px; margin: 0 auto; }
+  header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+  header img {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.08);
+  }
   h1 {
     font-weight: 900;
-    font-size: 28px;
+    font-size: 30px;
     letter-spacing: -0.5px;
+    line-height: 1.1;
   }
   h1 span { color: var(--brand-primary); }
   .subtitle {
-    color: #999;
+    color: #888;
     font-size: 14px;
-    margin-top: 6px;
+    margin: 6px 0 0 64px;
   }
   .resumen {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin: 24px 0 28px;
-    padding: 14px 18px;
-    border: 1px solid #1a1a1a;
-    border-radius: 10px;
-    background: #0a0a0a;
-    font-size: 15px;
+    gap: 12px;
+    margin: 36px 0 24px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #0d0d0d, #090909);
+    border: 1px solid rgba(255,255,255,0.06);
+    font-size: 16px;
+    font-weight: 700;
   }
-  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .dot.up { background: #22c55e; }
-  .dot.down { background: #ef4444; }
+  .resumen.todo-ok { border-color: rgba(34,197,94,0.25); }
+  .resumen.hay-caidos { border-color: rgba(239,68,68,0.3); }
+  .pulso {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .pulso.up { background: var(--up); box-shadow: 0 0 0 0 rgba(34,197,94,0.6); animation: latido 2s infinite; }
+  .pulso.down { background: var(--down); box-shadow: 0 0 0 0 rgba(239,68,68,0.6); animation: latido 1.2s infinite; }
+  @keyframes latido {
+    0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.45); }
+    70%  { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+    100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+  }
+  .pulso.down { animation-name: latido-down; }
+  @keyframes latido-down {
+    0%   { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
+    70%  { box-shadow: 0 0 0 8px rgba(239,68,68,0); }
+    100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+  }
   .lista { display: flex; flex-direction: column; gap: 10px; }
   .servicio {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 18px;
-    border: 1px solid #1a1a1a;
-    border-radius: 10px;
+    padding: 18px 20px;
+    border-radius: 12px;
     background: #0a0a0a;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: border-color 0.2s ease, transform 0.15s ease;
   }
-  .servicio-info { display: flex; align-items: center; gap: 12px; }
+  .servicio:hover {
+    border-color: rgba(0,128,240,0.35);
+    transform: translateY(-1px);
+  }
+  .servicio-info { display: flex; align-items: center; gap: 14px; }
+  .icono {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .icono.up { background: rgba(34,197,94,0.12); color: var(--up); }
+  .icono.down { background: rgba(239,68,68,0.14); color: var(--down); }
+  .icono svg { width: 18px; height: 18px; }
   .servicio-nombre { font-weight: 700; font-size: 15px; }
-  .servicio-url { color: #777; font-size: 12px; text-decoration: none; }
+  .servicio-url { color: #777; font-size: 12px; text-decoration: none; font-family: monospace; }
   .servicio-url:hover { color: var(--brand-primary); }
   .badge {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.6px;
   }
-  .badge.up { background: rgba(34,197,94,0.15); color: #22c55e; }
-  .badge.down { background: rgba(239,68,68,0.15); color: #ef4444; }
+  .badge.up { background: rgba(34,197,94,0.14); color: var(--up); }
+  .badge.down { background: rgba(239,68,68,0.16); color: var(--down); }
   footer {
-    margin-top: 36px;
+    margin-top: 40px;
     text-align: center;
     font-size: 12px;
     color: #555;
   }
   footer a { color: var(--brand-accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
   .cargando { color: #777; font-size: 14px; }
 </style>
 </head>
 <body>
   <div class="container">
     <header>
+      <img src="logo.png" alt="Menarguez-IA Solutions">
       <h1>Centinela <span>Menarguez-IA</span></h1>
-      <p class="subtitle">Monitor externo de disponibilidad — comprobación cada 5 minutos</p>
     </header>
+    <p class="subtitle">Monitor externo de disponibilidad — comprobación cada 5 minutos</p>
 
     <div id="resumen" class="resumen">
       <span class="cargando">Cargando estado...</span>
@@ -102,6 +159,9 @@
   </div>
 
 <script>
+const iconoUp = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+const iconoDown = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+
 async function cargarEstado() {
   try {
     const res = await fetch('status.json?t=' + Date.now());
@@ -114,17 +174,16 @@ async function cargarEstado() {
 
     const caidos = data.servicios.filter(s => s.estado === 'down').length;
     const resumen = document.getElementById('resumen');
-    if (caidos === 0) {
-      resumen.innerHTML = '<span class="dot up"></span> Todos los servicios operativos (' + data.servicios.length + '/' + data.servicios.length + ')';
-    } else {
-      resumen.innerHTML = '<span class="dot down"></span> ' + caidos + ' de ' + data.servicios.length + ' servicios caídos';
-    }
+    resumen.className = 'resumen ' + (caidos === 0 ? 'todo-ok' : 'hay-caidos');
+    resumen.innerHTML = caidos === 0
+      ? `<span class="pulso up"></span> Todos los servicios operativos (${data.servicios.length}/${data.servicios.length})`
+      : `<span class="pulso down"></span> ${caidos} de ${data.servicios.length} servicios caídos`;
 
     const lista = document.getElementById('lista');
     lista.innerHTML = data.servicios.map(s => `
       <div class="servicio">
         <div class="servicio-info">
-          <span class="dot ${s.estado}"></span>
+          <span class="icono ${s.estado}">${s.estado === 'up' ? iconoUp : iconoDown}</span>
           <div>
             <div class="servicio-nombre">${s.nombre}</div>
             <a class="servicio-url" href="${s.url}" target="_blank">${s.url.replace('https://','')}</a>
