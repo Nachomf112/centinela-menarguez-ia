@@ -1,14 +1,19 @@
 name: Centinela Menarguez-IA
-
 on:
   schedule:
     - cron: '*/5 * * * *'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
       - name: Comprobar servicios y avisar por Telegram
         run: |
           declare -A servicios=(
@@ -19,9 +24,13 @@ jobs:
             ["Nextcloud"]="https://cloud.menarguez-ia.com"
           )
 
+          timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          items=()
+
           for nombre in "${!servicios[@]}"; do
             url="${servicios[$nombre]}"
             status=$(curl -L -o /dev/null -s -m 10 -w "%{http_code}" "$url" || echo "000")
+
             if [ "$status" != "200" ]; then
               mensaje="🔴 *Centinela Menarguez-IA*%0A%0AServicio caído: *${nombre}*%0AURL: ${url}%0ACódigo: ${status}"
               curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
@@ -29,8 +38,24 @@ jobs:
                 -d "parse_mode=Markdown" \
                 -d "text=${mensaje}"
               echo "ALERTA enviada: $nombre caído ($status)"
+              estado="down"
             else
-
               echo "OK: $nombre ($status)"
+              estado="up"
             fi
+
+            items+=("{\"nombre\":\"${nombre}\",\"url\":\"${url}\",\"estado\":\"${estado}\",\"codigo\":\"${status}\"}")
           done
+
+          mkdir -p docs
+          json_servicios=$(IFS=,; echo "${items[*]}")
+          echo "{\"actualizado\":\"${timestamp}\",\"servicios\":[${json_servicios}]}" > docs/status.json
+          cat docs/status.json
+
+      - name: Publicar estado
+        run: |
+          git config user.name "centinela-bot"
+          git config user.email "centinela-bot@users.noreply.github.com"
+          git add docs/status.json
+          git diff --staged --quiet || git commit -m "Actualizar estado [skip ci]"
+          git push
